@@ -31,6 +31,7 @@ namespace ExcelToByteFile
             byteFileOutputDir.Text = GlobalConfig.Ins.byteFileOutputDir;
             codeFileOutputDir.Text = GlobalConfig.Ins.codeFileOutputDir;
             generateStructCs.Checked = GlobalConfig.Ins.generateStructInfoCode;
+            AddFilesInFolder();
         }
 
         /// <summary>
@@ -57,7 +58,18 @@ namespace ExcelToByteFile
                 }
             }
         }
-
+        private void AddFilesInFolder()
+        {
+            lsBox_selectedFiles.Items.Clear();
+            DirectoryInfo dInfo = new DirectoryInfo(GlobalConfig.Ins.lastSelectExcelPath);
+            foreach (var file in dInfo.GetFiles())
+            {
+                if (file.Extension == ".xlsx" || file.Extension == ".xls")
+                {
+                    lsBox_selectedFiles.Items.Add(file.FullName);
+                }
+            }
+        }
         /// <summary>
         /// 点击选择文件夹
         /// </summary>
@@ -67,21 +79,8 @@ namespace ExcelToByteFile
             DialogResult result = dialog_selectFolder.ShowDialog();
             if (result == DialogResult.OK)
             {
-                // 清空之前选择的文件
-                lsBox_selectedFiles.Items.Clear();
-
-                // 更新最近一次打开的目录
                 GlobalConfig.Ins.lastSelectExcelPath = dialog_selectFolder.SelectedPath;
-
-                // 将文件路径添加到列表
-                DirectoryInfo dInfo = new DirectoryInfo(dialog_selectFolder.SelectedPath);
-                foreach (var file in dInfo.GetFiles())
-                {
-                    if (file.Extension == ".xlsx" || file.Extension == ".xls")
-                    {
-                        lsBox_selectedFiles.Items.Add(file.FullName);
-                    }
-                }
+                AddFilesInFolder();
             }
         }
 
